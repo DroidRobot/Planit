@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, "claude/**", "feature/**"]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: planit/backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+        env:
+          JWT_SECRET: ci-test-secret
+          NODE_ENV: test
+
+  frontend:
+    name: Frontend Tests & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: planit/frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+        env:
+          CI: true
+
+      - name: Build
+        run: npm run build
+        env:
+          CI: false
+          REACT_APP_API_URL: http://localhost:3001/api
