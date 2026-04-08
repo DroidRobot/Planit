@@ -2,7 +2,7 @@
 
 A modern web-based planning application that helps people organize personal and professional goals. Create plans, set deadlines, track progress through tasks, and receive reminders — all through a clean, motivational interface.
 
-**CS 3754 Cloud Software Development**
+**CS 3704 Intermediate Software Development**
 Team: Ahmad Harb, Yousif Abuhaija, Zann Khawaja, Andrew Wulff, Carson Breslow
 
 ---
