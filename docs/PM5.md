@@ -1,6 +1,6 @@
 # Project Milestone 5: Testing and Maintenance
 
-**CS 3754 Cloud Software Development**
+**CS 3704**
 **Team:** Ahmad Harb, Yousif Abuhaija, Zann Khawaja, Andrew Wulff, Carson Breslow
 **Project:** Planit — A Modern Planning Application
 **Due:** April 24, 2026
