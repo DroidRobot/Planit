@@ -150,17 +150,6 @@ Each team member has conducted a code review of another teammate's PR. Below are
 - **AI-Specific Concerns:** AI-generated. The original AI code had a potential SQL error that was caught in review and fixed.
 - **Recommendation:** Merge as is
 
-#### Review 5: PR #49 (Tags Tests)
-**Reviewer:** Andrew Wulff
-**Author:** Zann Khawaja
-
-- **Overview:** Adds unit tests for the tags API endpoints.
-- **Correctness:** Tests properly cover CRUD operations for tags.
-- **Clarity:** Test code follows existing patterns.
-- **Maintainability:** Good mock setup reusable across tests.
-- **AI-Specific Concerns:** AI-generated. Tests are comprehensive.
-- **Recommendation:** Merge as is
-
 ---
 
 ## Process Deliverable V
