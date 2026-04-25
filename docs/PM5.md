@@ -51,7 +51,7 @@ PASS src/__tests__/integration.test.js
 PASS src/__tests__/auth.test.js
 
 Test Suites: 6 passed, 6 total
-Tests:       38 passed, 38 total
+Tests:       39 passed, 39 total
 ```
 
 #### Frontend Tests
@@ -71,7 +71,7 @@ Tests:       9 passed, 9 total
 | Auth (auth.test.js) | signup, login, logout | 9 tests |
 | Plans (plans.test.js) | list, create, delete | 5 tests |
 | Tasks (tasks.test.js) | list, create, update, reorder, delete | 12 tests |
-| Dashboard (dashboard.test.js) | stats, deadlines, overdue plans | 5 tests |
+| Dashboard (dashboard.test.js) | stats, deadlines, overdue plans, query-count regression | 6 tests |
 | Integration (integration.test.js) | signup->plan->task->complete->delete workflow | 3 tests |
 | Frontend Plans | render, search, filter | 5 tests |
 | Frontend Dashboard | render, stats display | 4 tests |
@@ -253,9 +253,9 @@ PASS src/__tests__/integration.test.js
 PASS src/__tests__/auth.test.js
 
 Test Suites: 6 passed, 6 total
-Tests:       38 passed, 38 total
+Tests:       39 passed, 39 total
 Snapshots:   0
-Time:       2.854s
+Time:       1.616s
 ```
 
 ### Frontend Test Output
