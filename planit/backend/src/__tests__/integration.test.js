@@ -164,3 +164,4 @@ describe('Integration: User workflow - signup, create plan, add tasks', () => {
     expect(reorderRes.body.message).toBe('Tasks reordered');
   });
 });
+// Ahmad Harb - PR #47 integration tests
