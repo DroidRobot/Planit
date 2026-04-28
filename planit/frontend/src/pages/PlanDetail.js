@@ -253,8 +253,8 @@ function PlanDetail() {
 
   return (
     <div>
-      <button className="btn btn-outline" onClick={() => navigate('/plans')} style={{ marginBottom: '1rem' }}>
-        &larr; Back to Plans
+<button className="btn btn-outline" onClick={() => navigate('/plans')} style={{ marginBottom: '1rem', width: 36, height: 36, padding: 0 }} title="Back to plans">
+        ↺
       </button>
 
       {error && <div className="error-msg">{error}</div>}
@@ -286,12 +286,14 @@ function PlanDetail() {
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {accessRole === 'owner' && (
-              <button className="btn btn-sm btn-secondary" onClick={() => setShowShare(!showShare)}>
-                Share
+              <button className="btn btn-sm btn-secondary" onClick={() => setShowShare(!showShare)} title="Share plan">
+                ⟶
               </button>
             )}
             {accessRole === 'owner' && (
-              <button className="btn btn-sm btn-danger" onClick={handleDeletePlan}>Delete Plan</button>
+              <button className="btn btn-sm btn-danger" onClick={handleDeletePlan} title="Delete plan">
+                ✕
+              </button>
             )}
           </div>
         </div>
@@ -347,7 +349,14 @@ function PlanDetail() {
                     {c.full_name} <span style={{ color: '#94a3b8' }}>({c.email})</span>
                     <span className={`badge badge-${c.role === 'editor' ? 'active' : 'medium'}`} style={{ marginLeft: '0.4rem', fontSize: '0.65rem' }}>{c.role}</span>
                   </div>
-                  <button className="btn btn-sm btn-outline" onClick={() => handleRemoveCollaborator(c.id)}>Remove</button>
+                  <button
+                    className="btn btn-sm btn-outline"
+                    style={{ width: 24, height: 24, padding: 0 }}
+                    onClick={() => handleRemoveCollaborator(c.id)}
+                    title="Remove collaborator"
+                  >
+                    ✕
+                  </button>
                 </div>
               ))}
             </div>
@@ -359,12 +368,12 @@ function PlanDetail() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '1.5rem 0 0.75rem' }}>
         <h2 style={{ fontSize: '1.1rem' }}>Tasks</h2>
         {canEdit && tasks.length > 0 && (
-          <div style={{ display: 'flex', gap: '0.4rem' }}>
-            <button className="btn btn-sm btn-secondary" onClick={handleMarkAllComplete}>
-              Mark All Complete
+          <div style={{ display: 'flex', gap: '0.25rem' }}>
+            <button className="btn btn-sm btn-secondary" onClick={handleMarkAllComplete} title="Mark all complete">
+              ✓
             </button>
-            <button className="btn btn-sm btn-outline" onClick={handleMarkAllPending}>
-              Reset All
+            <button className="btn btn-sm btn-outline" onClick={handleMarkAllPending} title="Reset all to pending">
+              ↺
             </button>
           </div>
         )}
@@ -478,22 +487,22 @@ function PlanDetail() {
                                   </div>
                                 )}
                                 {subtasks.length > 0 && (
-                                  <button
-                                    className="btn btn-sm btn-outline"
-                                    style={{ marginTop: '0.4rem', fontSize: '0.75rem', padding: '0.1rem 0.4rem' }}
-                                    onClick={() => toggleSubtaskExpand(task.id)}
-                                  >
-                                    {completedSubs}/{subtasks.length} subtasks {isExpanded ? '▲' : '▼'}
-                                  </button>
+<button
+                                  className="btn btn-sm btn-outline"
+                                  style={{ marginTop: '0.4rem', fontSize: '0.75rem', padding: '0.1rem 0.4rem' }}
+                                  onClick={() => toggleSubtaskExpand(task.id)}
+                                >
+                                  {completedSubs}/{subtasks.length} {isExpanded ? '−' : '+'}
+                                </button>
                                 )}
                               </div>
                             </div>
 
                             {canEdit && (
-                              <div style={{ display: 'flex', gap: '0.3rem', flexShrink: 0, marginLeft: '0.5rem' }}>
+                              <div style={{ display: 'flex', gap: '0.25rem', flexShrink: 0, marginLeft: '0.5rem' }}>
                                 <button
                                   className="btn btn-sm btn-outline"
-                                  style={{ fontSize: '0.75rem' }}
+                                  style={{ width: 28, height: 28, padding: 0 }}
                                   onClick={() => handleSetInProgress(task)}
                                   title={task.status === 'in_progress' ? 'Mark pending' : 'Mark in progress'}
                                 >
@@ -501,15 +510,17 @@ function PlanDetail() {
                                 </button>
                                 <button
                                   className="btn btn-sm btn-secondary"
-                                  style={{ fontSize: '0.75rem' }}
+                                  style={{ width: 28, height: 28, padding: 0 }}
                                   onClick={() => setEditingTask(task)}
+                                  title="Edit task"
                                 >
-                                  Edit
+                                  ✎
                                 </button>
                                 <button
                                   className="btn btn-sm btn-outline"
-                                  style={{ fontSize: '0.75rem' }}
+                                  style={{ width: 28, height: 28, padding: 0 }}
                                   onClick={() => handleDeleteTask(task.id)}
+                                  title="Delete task"
                                 >
                                   ✕
                                 </button>

@@ -156,7 +156,14 @@ function Reminders() {
                 {r.task_title && ` — Task: ${r.task_title}`}
               </div>
             </div>
-            <button className="btn btn-sm btn-outline" onClick={() => handleDelete(r.id)}>Delete</button>
+            <button
+              className="btn btn-sm btn-outline"
+              style={{ width: 28, height: 28, padding: 0 }}
+              onClick={() => handleDelete(r.id)}
+              title="Delete reminder"
+            >
+              ✕
+            </button>
           </div>
         ))
       )}

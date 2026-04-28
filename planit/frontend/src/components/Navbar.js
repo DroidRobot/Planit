@@ -6,7 +6,16 @@ function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 8);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -34,7 +43,7 @@ function Navbar() {
     .toUpperCase();
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <Link to="/" className="navbar-brand">Planit</Link>
       <div className="navbar-links">
         <NavLink to="/" end>Dashboard</NavLink>
@@ -54,7 +63,7 @@ function Navbar() {
             <div className="navbar-avatar-initials">{initials}</div>
           )}
           <span className="profile-name">{user.fullName}</span>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ opacity: 0.7, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0)' }}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ opacity: 0.6, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0)', color: '#64748b' }}>
             <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>

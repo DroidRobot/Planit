@@ -268,29 +268,27 @@ function Plans() {
                     {!plan.is_owner && (
                       <span className="badge badge-shared" style={{ marginLeft: '0.5rem', fontSize: '0.65rem' }}>shared</span>
                     )}
+                    {plan.tags && plan.tags.length > 0 && (
+                      <span style={{ marginLeft: '0.5rem', display: 'inline-flex', gap: '0.25rem' }}>
+                        {plan.tags.map((tag) => (
+                          <span
+                            key={tag.id}
+                            className="tag-badge"
+                            style={{ background: tag.color + '22', color: tag.color, borderColor: tag.color + '44' }}
+                          >
+                            {tag.name}
+                            {plan.is_owner && (
+                              <button className="tag-remove" onClick={() => handleRemoveTagFromPlan(plan.id, tag.id)}>✕</button>
+                            )}
+                          </span>
+                        ))}
+                      </span>
+                    )}
                   </h3>
                   {plan.description && (
                     <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                       {plan.description}
                     </p>
-                  )}
-
-                  {/* Tags */}
-                  {plan.tags && plan.tags.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.4rem' }}>
-                      {plan.tags.map((tag) => (
-                        <span
-                          key={tag.id}
-                          className="tag-badge"
-                          style={{ background: tag.color + '22', color: tag.color, borderColor: tag.color + '44' }}
-                        >
-                          {tag.name}
-                          {plan.is_owner && (
-                            <button className="tag-remove" onClick={() => handleRemoveTagFromPlan(plan.id, tag.id)}>✕</button>
-                          )}
-                        </span>
-                      ))}
-                    </div>
                   )}
 
                   <div className="plan-meta">
@@ -301,42 +299,64 @@ function Plans() {
                       <span>{plan.completed_tasks || 0}/{(plan.total_tasks || 0)} tasks</span>
                     )}
                   </div>
-                  {(plan.total_tasks || 0) > 0 && (
-                    <div className="progress-bar">
-                      <div
-                        className="progress-fill"
-                        style={{ width: `${((plan.completed_tasks || 0) / (plan.total_tasks || 1)) * 100}%` }}
-                      />
-                    </div>
-                  )}
-
                 </div>
 
                 <div className="plan-actions">
                   {plan.is_owner && plan.status !== 'archived' && (
                     <button
-                      className="btn btn-sm btn-outline"
+                      className="action-btn"
                       onClick={() => handleStatusChange(plan, plan.status === 'completed' ? 'active' : 'completed')}
+                      title={plan.status === 'completed' ? 'Reopen' : 'Complete'}
                     >
-                      {plan.status === 'completed' ? 'Reopen' : 'Complete'}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </button>
                   )}
                   {plan.is_owner && (
                     <button
-                      className="btn btn-sm btn-outline"
+                      className="action-btn"
                       onClick={() => handleStatusChange(plan, plan.status === 'archived' ? 'active' : 'archived')}
+                      title={plan.status === 'archived' ? 'Unarchive' : 'Archive'}
                     >
-                      {plan.status === 'archived' ? 'Unarchive' : 'Archive'}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
                     </button>
                   )}
                   {plan.is_owner && (
-                    <button className="btn btn-sm btn-secondary" onClick={() => setEditingPlan(plan)}>Edit</button>
+                    <button
+                      className="action-btn"
+                      onClick={() => setEditingPlan(plan)}
+                      title="Edit"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.75A2.25 2.25 0 0 1 5.25 6H10" />
+                      </svg>
+                    </button>
                   )}
                   {plan.is_owner && (
-                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(plan.id)}>Delete</button>
+                    <button
+                      className="action-btn action-btn-delete"
+                      onClick={() => handleDelete(plan.id)}
+                      title="Delete"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   )}
                 </div>
               </div>
+
+              {(plan.total_tasks || 0) > 0 && (
+                <div className="progress-bar">
+                  <div
+                    className="progress-fill"
+                    style={{ width: `${((plan.completed_tasks || 0) / (plan.total_tasks || 1)) * 100}%` }}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
