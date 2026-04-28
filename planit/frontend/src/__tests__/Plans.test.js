@@ -71,7 +71,7 @@ test('calls deletePlan on confirm', async () => {
   renderPlans();
   await screen.findByText('Study React');
 
-  const deleteButtons = screen.getAllByText('Delete');
+  const deleteButtons = screen.getAllByTitle('Delete');
   fireEvent.click(deleteButtons[0]);
 
   await waitFor(() => expect(api.deletePlan).toHaveBeenCalledWith(1));
