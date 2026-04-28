@@ -65,13 +65,13 @@ router.get('/', async (req, res) => {
        ),
        weekly AS (
          SELECT
-           TO_CHAR(DATE(updated_at AT TIME ZONE 'UTC'), 'YYYY-MM-DD') AS date,
+           TO_CHAR(DATE(updated_at), 'YYYY-MM-DD') AS date,
            COUNT(*) AS completed
          FROM tasks
          WHERE user_id = $1
            AND status = 'completed'
            AND updated_at >= NOW() - INTERVAL '7 days'
-         GROUP BY DATE(updated_at AT TIME ZONE 'UTC')
+         GROUP BY DATE(updated_at)
          ORDER BY date ASC
        )
        SELECT
@@ -110,7 +110,7 @@ router.get('/', async (req, res) => {
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       weeklyTrend.push({ date: key, completed: weeklyMap[key] || 0 });
     }
 

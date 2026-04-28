@@ -184,7 +184,7 @@ router.get('/me', async (req, res) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const result = await pool.query(
-      'SELECT id, email, full_name, avatar_url, phone_number FROM users WHERE id = $1',
+      'SELECT id, email, full_name, avatar_url, phone_number, password_hash FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -200,6 +200,7 @@ router.get('/me', async (req, res) => {
         fullName: user.full_name,
         avatarUrl: user.avatar_url,
         phoneNumber: user.phone_number,
+        hasPassword: !!user.password_hash,
       },
     });
   } catch (err) {
@@ -207,7 +208,7 @@ router.get('/me', async (req, res) => {
   }
 });
 
-// PUT /api/auth/me — update phone number
+// PUT /api/auth/me — update profile (name, phone, password)
 router.put('/me', async (req, res) => {
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
@@ -217,13 +218,35 @@ router.put('/me', async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { phoneNumber } = req.body;
+    const { fullName, phoneNumber, currentPassword, newPassword } = req.body;
+
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ error: 'Current password is required to set a new password' });
+      }
+      const userCheck = await pool.query('SELECT password_hash FROM users WHERE id = $1', [decoded.userId]);
+      if (userCheck.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      if (!userCheck.rows[0].password_hash) {
+        return res.status(400).json({ error: 'Google accounts cannot set a password here' });
+      }
+      const valid = await bcrypt.compare(currentPassword, userCheck.rows[0].password_hash);
+      if (!valid) {
+        return res.status(401).json({ error: 'Current password is incorrect' });
+      }
+      const newHash = await bcrypt.hash(newPassword, 10);
+      await pool.query('UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2', [newHash, decoded.userId]);
+    }
 
     const result = await pool.query(
-      `UPDATE users SET phone_number = $1, updated_at = NOW()
-       WHERE id = $2
+      `UPDATE users
+       SET full_name = COALESCE($1, full_name),
+           phone_number = COALESCE($2, phone_number),
+           updated_at = NOW()
+       WHERE id = $3
        RETURNING id, email, full_name, avatar_url, phone_number`,
-      [phoneNumber || null, decoded.userId]
+      [fullName || null, phoneNumber || null, decoded.userId]
     );
 
     if (result.rows.length === 0) {

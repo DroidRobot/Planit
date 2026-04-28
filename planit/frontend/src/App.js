@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import Plans from './pages/Plans';
 import PlanDetail from './pages/PlanDetail';
 import Reminders from './pages/Reminders';
+import Profile from './pages/Profile';
 import './styles/App.css';
 
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || '';
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/plans" element={<ProtectedRoute><Plans /></ProtectedRoute>} />
                 <Route path="/plans/:id" element={<ProtectedRoute><PlanDetail /></ProtectedRoute>} />
                 <Route path="/reminders" element={<ProtectedRoute><Reminders /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>

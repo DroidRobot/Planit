@@ -78,6 +78,88 @@ body {
   font-weight: 500;
 }
 
+/* Profile dropdown menu */
+.profile-menu {
+  position: relative;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.profile-trigger:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.profile-name {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropdownFade 0.15s ease;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-dropdown-header {
+  padding: 0.75rem 1rem;
+  color: #1e293b;
+}
+
+.profile-dropdown-divider {
+  height: 1px;
+  background: #f1f5f9;
+}
+
+.profile-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: none;
+  background: none;
+  color: #334155;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.profile-dropdown-item:hover {
+  background: #f8fafc;
+}
+
+.profile-dropdown-logout {
+  color: #ef4444;
+}
+
+.profile-dropdown-logout:hover {
+  background: #fef2f2;
+}
+
 /* User avatar (photo or initials) */
 .navbar-avatar {
   width: 32px;
@@ -255,6 +337,29 @@ body {
   font-size: 0.7rem;
   font-weight: 600;
   border: 1px solid transparent;
+  position: relative;
+}
+
+.tag-badge .tag-remove {
+  display: none;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.tag-badge:hover .tag-remove {
+  display: block;
 }
 
 /* ─── Auth pages ─── */

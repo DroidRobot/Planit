@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT DISTINCT p.*,
+      `SELECT p.*,
           p.user_id = $1 AS is_owner,
           COALESCE(pc_self.role, 'owner') AS access_role,
           COUNT(t.id) FILTER (WHERE t.status = 'completed') AS completed_tasks,
@@ -175,6 +175,16 @@ router.put('/:id', async (req, res) => {
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Plan not found' });
+    }
+
+    if (status === 'completed') {
+      const taskUpdate = await pool.query(
+        `UPDATE tasks SET status = 'completed', updated_at = NOW()
+         WHERE plan_id = $1 AND status != 'completed'
+         RETURNING id`,
+        [req.params.id]
+      );
+      console.log(`Plan ${req.params.id} completed — marked ${taskUpdate.rowCount} task(s) as completed`);
     }
 
     res.json({ plan: result.rows[0] });

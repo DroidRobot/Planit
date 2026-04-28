@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { getPlans, createPlan, updatePlan, deletePlan, getTags, createTag, addTagToPlan, removeTagFromPlan } from '../services/api';
+import { getPlans, createPlan, updatePlan, deletePlan, getTags, createTag, deleteTag, addTagToPlan, removeTagFromPlan } from '../services/api';
 import PlanModal from '../components/PlanModal';
 
 const STATUS_OPTIONS = [
@@ -62,9 +62,22 @@ function Plans() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  const syncTags = async (planId, tagIds, existingTagIds = []) => {
+    const toAdd = tagIds.filter((id) => !existingTagIds.includes(id));
+    const toRemove = existingTagIds.filter((id) => !tagIds.includes(id));
+    await Promise.all([
+      ...toAdd.map((tagId) => addTagToPlan(planId, tagId)),
+      ...toRemove.map((tagId) => removeTagFromPlan(planId, tagId)),
+    ]);
+  };
+
   const handleCreate = async (data) => {
     try {
-      await createPlan(data);
+      const { tagIds, ...planData } = data;
+      const res = await createPlan(planData);
+      if (tagIds && tagIds.length > 0) {
+        await syncTags(res.data.plan.id, tagIds);
+      }
       setShowModal(false);
       fetchAll();
     } catch (err) {
@@ -74,7 +87,10 @@ function Plans() {
 
   const handleEdit = async (data) => {
     try {
-      await updatePlan(editingPlan.id, data);
+      const { tagIds, ...planData } = data;
+      await updatePlan(editingPlan.id, planData);
+      const existingTagIds = (editingPlan.tags || []).map((t) => t.id);
+      await syncTags(editingPlan.id, tagIds || [], existingTagIds);
       setEditingPlan(null);
       fetchAll();
     } catch (err) {
@@ -114,17 +130,21 @@ function Plans() {
     }
   };
 
-  const handleToggleTag = async (plan, tag) => {
-    const hasTag = plan.tags?.some((t) => t.id === tag.id);
+  const handleDeleteTag = async (tagId) => {
     try {
-      if (hasTag) {
-        await removeTagFromPlan(plan.id, tag.id);
-      } else {
-        await addTagToPlan(plan.id, tag.id);
-      }
+      await deleteTag(tagId);
       fetchAll();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to update tag');
+      setError(err.response?.data?.error || 'Failed to delete tag');
+    }
+  };
+
+  const handleRemoveTagFromPlan = async (planId, tagId) => {
+    try {
+      await removeTagFromPlan(planId, tagId);
+      fetchAll();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to remove tag');
     }
   };
 
@@ -171,6 +191,7 @@ function Plans() {
                 style={{ background: tag.color + '22', color: tag.color, borderColor: tag.color + '44' }}
               >
                 {tag.name}
+                <button className="tag-remove" onClick={() => handleDeleteTag(tag.id)}>✕</button>
               </span>
             ))}
             {allTags.length === 0 && <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>No tags yet.</span>}
@@ -264,6 +285,9 @@ function Plans() {
                           style={{ background: tag.color + '22', color: tag.color, borderColor: tag.color + '44' }}
                         >
                           {tag.name}
+                          {plan.is_owner && (
+                            <button className="tag-remove" onClick={() => handleRemoveTagFromPlan(plan.id, tag.id)}>✕</button>
+                          )}
                         </span>
                       ))}
                     </div>
@@ -286,30 +310,6 @@ function Plans() {
                     </div>
                   )}
 
-                  {/* Tag toggles (show when tag manager is open) */}
-                  {showTagManager && allTags.length > 0 && plan.is_owner && (
-                    <div style={{ marginTop: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
-                      {allTags.map((tag) => {
-                        const hasTag = plan.tags?.some((t) => t.id === tag.id);
-                        return (
-                          <button
-                            key={tag.id}
-                            className="btn btn-sm"
-                            style={{
-                              background: hasTag ? tag.color : 'transparent',
-                              color: hasTag ? 'white' : tag.color,
-                              border: `1px solid ${tag.color}`,
-                              fontSize: '0.7rem',
-                              padding: '0.1rem 0.4rem',
-                            }}
-                            onClick={() => handleToggleTag(plan, tag)}
-                          >
-                            {tag.name}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
 
                 <div className="plan-actions">
