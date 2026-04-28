@@ -297,15 +297,15 @@ function Plans() {
                     <span className={`badge badge-${plan.priority}`}>{plan.priority}</span>
                     <span className={`badge badge-${plan.status}`}>{plan.status}</span>
                     {formatDeadline(plan.deadline)}
-                    {plan.total_tasks > 0 && (
-                      <span>{plan.completed_tasks}/{plan.total_tasks} tasks</span>
+                    {(plan.total_tasks || 0) > 0 && (
+                      <span>{plan.completed_tasks || 0}/{(plan.total_tasks || 0)} tasks</span>
                     )}
                   </div>
-                  {plan.total_tasks > 0 && (
+                  {(plan.total_tasks || 0) > 0 && (
                     <div className="progress-bar">
                       <div
                         className="progress-fill"
-                        style={{ width: `${(plan.completed_tasks / plan.total_tasks) * 100}%` }}
+                        style={{ width: `${((plan.completed_tasks || 0) / (plan.total_tasks || 1)) * 100}%` }}
                       />
                     </div>
                   )}
