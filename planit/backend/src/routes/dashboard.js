@@ -43,10 +43,7 @@ overdue AS (
             AND p.status = 'active'
             AND p.deadline IS NOT NULL
             AND p.deadline < NOW()
-            AND (
-              NOT EXISTS (SELECT 1 FROM tasks t WHERE t.plan_id = p.id)
-              OR EXISTS (SELECT 1 FROM tasks t WHERE t.plan_id = p.id AND t.status != 'completed')
-            )
+            AND EXISTS (SELECT 1 FROM tasks t WHERE t.plan_id = p.id AND t.status != 'completed')
           ORDER BY p.deadline ASC
         )
        SELECT
