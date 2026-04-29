@@ -36,15 +36,19 @@ router.get('/', async (req, res) => {
          ORDER BY deadline ASC
          LIMIT 10
        ),
-       overdue AS (
-         SELECT id, title, deadline, priority
-         FROM plans
-         WHERE user_id = $1
-           AND status = 'active'
-           AND deadline IS NOT NULL
-           AND deadline < NOW()
-         ORDER BY deadline ASC
-       )
+overdue AS (
+          SELECT p.id, p.title, p.deadline, p.priority
+          FROM plans p
+          WHERE p.user_id = $1
+            AND p.status = 'active'
+            AND p.deadline IS NOT NULL
+            AND p.deadline < NOW()
+            AND (
+              NOT EXISTS (SELECT 1 FROM tasks t WHERE t.plan_id = p.id)
+              OR EXISTS (SELECT 1 FROM tasks t WHERE t.plan_id = p.id AND t.status != 'completed')
+            )
+          ORDER BY p.deadline ASC
+        )
        SELECT
          (SELECT row_to_json(s)        FROM summary  s)                          AS summary,
          COALESCE((SELECT json_agg(row_to_json(u)) FROM upcoming u), '[]'::json) AS upcoming,
